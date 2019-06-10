@@ -1,10 +1,11 @@
-package com.example.messagesinkotlin
+package com.example.messagesinkotlin.Messaging
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
+import com.example.messagesinkotlin.Models.User
+import com.example.messagesinkotlin.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -24,15 +25,11 @@ class NewMessageActivity : AppCompatActivity() {
 
         supportActionBar?.title = "Select User" //Changes title at top when new message has been selected
 
-        /*val adapter = GroupAdapter<ViewHolder>()
-
-        adapter.add(UserItem())
-        adapter.add(UserItem())
-        adapter.add(UserItem())
-
-        recyclerview_newmessage.adapter = adapter*/
-
         fetchUsers()
+    }
+
+    companion object{
+        val USER_KEY = "USER_KEY"
     }
 
     private fun fetchUsers(){
@@ -48,6 +45,15 @@ class NewMessageActivity : AppCompatActivity() {
                     if (user != null){
                         adapter.add(UserItem(user))
                     }
+                }
+
+                adapter.setOnItemClickListener{item, view ->
+                    val userItem = item as UserItem
+
+                    val intent = Intent(view.context, ChatlogActivity::class.java)
+                    //intent.putExtra(USER_KEY, item.user.username)
+                    intent.putExtra(USER_KEY, userItem.user)
+                    startActivity(intent)
                 }
 
                 recyclerview_newmessage.adapter = adapter

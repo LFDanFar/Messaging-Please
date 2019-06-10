@@ -1,14 +1,16 @@
-package com.example.messagesinkotlin
+package com.example.messagesinkotlin.RegisterandLogin
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import com.example.messagesinkotlin.Messaging.LatestMessagesActivity
+import com.example.messagesinkotlin.Models.User
+import com.example.messagesinkotlin.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -120,7 +122,8 @@ class RegisterActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
 
-        val user = User(uid, usernameEditText.text.toString(), profileImageUrl)
+        val user =
+            User(uid, usernameEditText.text.toString(), profileImageUrl)
 
         ref.setValue(user)
             .addOnSuccessListener {
@@ -135,7 +138,7 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 }
-
+/*
 class User(val uid: String, val username: String, val profileImageUrl: String){
     constructor() : this("", "", "")
-}
+}*/
