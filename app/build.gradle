@@ -33,6 +33,11 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:16.0.9'   //Firebase
     implementation 'com.google.firebase:firebase-auth:17.0.0'
+
+    implementation 'com.google.firebase:firebase-storage:17.0.0'    //More Firebase, but for storage
+    implementation 'com.google.firebase:firebase-database:17.0.0'
+
+    implementation 'de.hdodenhof:circleimageview:3.0.0' //Make the user image round
 }
 
 apply plugin: 'com.google.gms.google-services' //Firebase
