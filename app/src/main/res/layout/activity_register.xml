@@ -22,7 +22,7 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:inputType="textPersonName"
+            android:inputType="textPersonName|textPassword"
             android:ems="10"
             android:paddingLeft="16dp"
             android:id="@+id/passwordEditText"
@@ -62,7 +62,7 @@
             android:textColor="@android:color/white"
             android:id="@+id/existingAccountTextView" app:layout_constraintStart_toStartOf="@+id/passwordEditText"
             app:layout_constraintEnd_toEndOf="@+id/passwordEditText"
-            app:layout_constraintTop_toBottomOf="@+id/registerUserButton"/>
+            app:layout_constraintTop_toBottomOf="@+id/registerUserButton" android:textAlignment="center"/>
     <Button
             android:text="Select Photo"
             android:layout_width="150dp"

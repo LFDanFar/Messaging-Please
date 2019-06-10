@@ -16,26 +16,23 @@ import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
         //Make button do stuff
-        registerUserButton.setOnClickListener{
+        registerUserButton.setOnClickListener{          //User created account
             registerUser()  //Reformatted my code
         }
-
-        //User has account
-        existingAccountTextView.setOnClickListener{
+        existingAccountTextView.setOnClickListener{     //User has account
             Log.d("RegisterActivity", "Try to show login activity")
 
-            //Launch login activity
+            //Launch LoginActivity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
-        selectPhotoButton.setOnClickListener{
+        selectPhotoButton.setOnClickListener{           //Make the round button choose a picture
             Log.d("RegisterActivity", "Try to show photo selector")
 
             val intent = Intent(Intent.ACTION_PICK)
@@ -56,11 +53,11 @@ class RegisterActivity : AppCompatActivity() {
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
 
-            selectPhotoImageView.setImageBitmap(bitmap)
-            selectPhotoButton.alpha = 0f
+            selectPhotoImageView.setImageBitmap(bitmap)     //Allows for image to be chosen
+            selectPhotoButton.alpha = 0f                    //Changes photo button so round picture may be viewed
 
             /*val bitmapDrawable = BitmapDrawable(bitmap)
-            selectPhotoButton.setBackgroundDrawable(bitmapDrawable)*/
+            selectPhotoButton.setBackgroundDrawable(bitmapDrawable)*/   //Redundant due to val bitmap -> selectPhotoButton
         }
     }
 
@@ -70,10 +67,10 @@ class RegisterActivity : AppCompatActivity() {
     private fun registerUser() {    //Register button, sends info to FireBase
         //Easier accessing of textboxes on login screen
         val email = emailEditText.text.toString();
-        val username = usernameEditText.text.toString();
         val password = passwordEditText.text.toString();
 
         if (email.isEmpty() || password.isEmpty()){ //Requires password & email
+            //Toast is the little grey window that pops up at the bottom when something happens
             Toast.makeText(this, "Please enter text in fields", Toast.LENGTH_SHORT).show()
             return
         }
@@ -82,13 +79,14 @@ class RegisterActivity : AppCompatActivity() {
         Log.d("RegisterActivity", "Password: $password")   //$ does string format
 
         //Firebase goes here
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)  //Creates account
             .addOnCompleteListener{
                 if(!it.isSuccessful)    //Unsuccessful
                     return@addOnCompleteListener
 
                 //Successful
                 Log.d("RegisterActivity", "Successfully created user with uid: ${it.result?.user?.uid}")
+                Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show() //Account created
 
                 uploadImageToFirebaseStorage()
             }
@@ -102,7 +100,7 @@ class RegisterActivity : AppCompatActivity() {
             return
 
         val filename = UUID.randomUUID().toString()
-        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")   //Tracks storage of image
 
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
@@ -127,8 +125,17 @@ class RegisterActivity : AppCompatActivity() {
         ref.setValue(user)
             .addOnSuccessListener {
                 Log.d("RegisterActivity", "Saved user to Firebase Database")
+
+                val intent = Intent(this, LatestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)    //This clears all previous activity and makes it so clicking back closes the app.  Clear previous data
+                startActivity(intent)
+            }
+            .addOnFailureListener{
+                Log.d("RegisterActivity", "Failed to set value to database: ${it.message}")
             }
     }
 }
 
-class User(val uid: String, val username: String, val profileImageUrl: String)
+class User(val uid: String, val username: String, val profileImageUrl: String){
+    constructor() : this("", "", "")
+}

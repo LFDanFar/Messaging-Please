@@ -37,7 +37,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:17.0.0'    //More Firebase, but for storage
     implementation 'com.google.firebase:firebase-database:17.0.0'
 
-    implementation 'de.hdodenhof:circleimageview:3.0.0' //Make the user image round
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'//Make the user image round
+
+    implementation 'com.xwray:groupie:2.1.0'                //3rd Party adapter plugin to make life easier
+    implementation 'com.squareup.picasso:picasso:2.71828'   //Picasso
 }
 
 apply plugin: 'com.google.gms.google-services' //Firebase
+

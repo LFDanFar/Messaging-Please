@@ -7,10 +7,10 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:inputType="textPersonName"
+            android:inputType="textPersonName|textAutoComplete"
             android:ems="10"
             android:paddingLeft="16dp"
-            android:hint="Username"
+            android:hint="Email"
             android:background="@drawable/rounded_text"
             android:id="@+id/accountLoginUsername" android:layout_marginStart="8dp"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
@@ -19,7 +19,7 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:inputType="textPersonName"
+            android:inputType="textPersonName|textPassword"
             android:ems="10"
             android:paddingLeft="16dp"
             android:id="@+id/accountLoginPassword"
@@ -44,7 +44,8 @@
             android:text="Want to create an account?"
             android:layout_width="200dp"
             android:layout_height="15dp"
-            android:id="@+id/accountExistsTextView" app:layout_constraintStart_toStartOf="@+id/accountLoginPassword"
+            android:id="@+id/accountCreateTextView" app:layout_constraintStart_toStartOf="@+id/accountLoginPassword"
             app:layout_constraintEnd_toEndOf="@+id/accountLoginPassword" android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/signInButton" android:textColor="#FFFFFF"/>
+            app:layout_constraintTop_toBottomOf="@+id/signInButton" android:textColor="#FFFFFF"
+            android:textAlignment="center"/>
 </android.support.constraint.ConstraintLayout>
