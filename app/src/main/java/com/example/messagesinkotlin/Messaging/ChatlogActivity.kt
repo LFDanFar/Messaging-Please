@@ -11,6 +11,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
@@ -22,15 +23,17 @@ class ChatlogActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<ViewHolder>()
 
+    var toUser: User? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatlog)
 
         recyclerviewChatlog.adapter = adapter
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        toUser = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
 
-        supportActionBar?.title = user.username
+        supportActionBar?.title = toUser?.username
 
         listenMessages()
 
@@ -69,10 +72,11 @@ class ChatlogActivity : AppCompatActivity() {
                     Log.d("Chatlog", chatMessage.text)
 
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid){
-                        adapter.add(ChatFromItem(chatMessage.text))
+                        val currentUser = LatestMessagesActivity.currentUser ?: return
+                        adapter.add(ChatFromItem(chatMessage.text, currentUser))
                     }
                     else{
-                        adapter.add(ChatToItem(chatMessage.text))
+                        adapter.add(ChatToItem(chatMessage.text, toUser!!))
                     }
                 }
             }
@@ -93,31 +97,29 @@ class ChatlogActivity : AppCompatActivity() {
                 //
             }
         })
-        /*val adapter = GroupAdapter<ViewHolder>()
-
-        adapter.add(ChatToItem("To\nTo"))
-        adapter.add(ChatFromItem("From"))
-        adapter.add(ChatToItem("To\nTo"))
-        adapter.add(ChatFromItem("From"))
-        adapter.add(ChatToItem("To\nTo"))
-        adapter.add(ChatFromItem("From"))
-
-        recyclerviewChatlog.adapter = adapter*/
     }
 }
 
-class ChatFromItem(val text: String): Item<ViewHolder>(){
+class ChatFromItem(val text: String, val user: User): Item<ViewHolder>(){
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.textViewFromRow.text = text
+
+        val uri = user.profileImageUrl
+        val targetImageView = viewHolder.itemView.imageViewFromRow
+        Picasso.get().load(uri).into(targetImageView)
     }
 
     override fun getLayout(): Int {
         return R.layout.chat_from_row
     }
 }
-class ChatToItem(val text: String): Item<ViewHolder>(){
+class ChatToItem(val text: String, val user: User): Item<ViewHolder>(){
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.textViewToRow.text = text
+
+        val uri = user.profileImageUrl
+        val targetImageView = viewHolder.itemView.imageViewToRow
+        Picasso.get().load(uri).into(targetImageView)
     }
 
     override fun getLayout(): Int {

@@ -4,18 +4,45 @@ import android.content.Intent
 import com.google.firebase.auth.FirebaseAuth
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.example.messagesinkotlin.Models.User
 import com.example.messagesinkotlin.R
 import com.example.messagesinkotlin.RegisterandLogin.RegisterActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class LatestMessagesActivity : AppCompatActivity() {
+
+    companion object{
+        var currentUser: User? = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_latest_messages)
 
+        fetchCurrentUser()
+
         verifySignedInUser()
+    }
+
+    private fun fetchCurrentUser(){
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+                currentUser = p0.getValue(User::class.java)
+                Log.d("LatestMessages", "Current user: ${currentUser?.username}")
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                //
+            }
+        })
     }
 
     private fun verifySignedInUser(){
