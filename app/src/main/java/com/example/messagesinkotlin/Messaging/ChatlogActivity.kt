@@ -52,17 +52,27 @@ class ChatlogActivity : AppCompatActivity() {
 
         if (fromId == null) return
 
-        val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
+        //val reference = FirebaseDatabase.getInstance().getReference("/messages").push()         //Does general push
+        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()      //Messages stored with IDs so users can get their correct messages
         val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis()/1000)     //Remove these if I don't want to store specific information
+
+        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()    //Receive messages from other users
+
 
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 Log.d("Chatlog", "Saved chat message: ${reference.key}")
+                editTextChatlog.text.clear()    //Clears textbox for messages
+                recyclerviewChatlog.scrollToPosition(adapter.itemCount - 1)
             }
+
+        toReference.setValue(chatMessage)
     }
 
     private fun listenMessages(){
-        val ref = FirebaseDatabase.getInstance().getReference("/messages")
+        val fromId = FirebaseAuth.getInstance().uid
+        val toId = toUser?.uid
+        val ref = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId")
 
         ref.addChildEventListener(object: ChildEventListener{
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
