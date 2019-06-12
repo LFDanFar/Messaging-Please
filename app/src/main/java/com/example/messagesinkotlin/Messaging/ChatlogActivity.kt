@@ -67,6 +67,12 @@ class ChatlogActivity : AppCompatActivity() {
             }
 
         toReference.setValue(chatMessage)
+
+        //Latest message stuff
+        val latestMessageReference = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")      //Creates node that stores information for user sending
+        latestMessageReference.setValue(chatMessage)
+        val latestMessageToReference = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")    //Stores information for user receiving
+        latestMessageToReference.setValue(chatMessage)
     }
 
     private fun listenMessages(){
