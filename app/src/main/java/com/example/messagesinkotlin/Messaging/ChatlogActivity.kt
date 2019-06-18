@@ -6,6 +6,8 @@ import android.util.Log
 import com.example.messagesinkotlin.Models.ChatMessage
 import com.example.messagesinkotlin.Models.User
 import com.example.messagesinkotlin.R
+import com.example.messagesinkotlin.Views.ChatFromItem
+import com.example.messagesinkotlin.Views.ChatToItem
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -118,29 +120,3 @@ class ChatlogActivity : AppCompatActivity() {
     }
 }
 
-class ChatFromItem(val text: String, val user: User): Item<ViewHolder>(){
-    override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemView.textViewFromRow.text = text
-
-        val uri = user.profileImageUrl
-        val targetImageView = viewHolder.itemView.imageViewFromRow
-        Picasso.get().load(uri).into(targetImageView)
-    }
-
-    override fun getLayout(): Int {
-        return R.layout.chat_from_row
-    }
-}
-class ChatToItem(val text: String, val user: User): Item<ViewHolder>(){
-    override fun bind(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemView.textViewToRow.text = text
-
-        val uri = user.profileImageUrl
-        val targetImageView = viewHolder.itemView.imageViewToRow
-        Picasso.get().load(uri).into(targetImageView)
-    }
-
-    override fun getLayout(): Int {
-        return R.layout.chat_to_row
-    }
-}
