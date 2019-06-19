@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.net.Uri
@@ -13,7 +14,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.provider.Settings.Global.getString
 import android.support.v4.content.ContextCompat.getSystemService
-import android.support.v4.media.app.NotificationCompat
+import android.support.v4.app.NotificationCompat
 import com.example.messagesinkotlin.R
 
 @SuppressLint("ParcelCreator")
@@ -21,6 +22,10 @@ class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelabl
     companion object CREATOR : Parcelable.Creator<NotifyMessage> {
         override fun createFromParcel(parcel: Parcel): NotifyMessage {
             return NotifyMessage(parcel)
+        }
+
+        private fun NotifyMessage(parcel: Parcel): NotifyMessage {
+            //
         }
 
         override fun newArray(size: Int): Array<NotifyMessage?> {
@@ -87,11 +92,11 @@ class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelabl
         }
     }*/
 
-    constructor(parcel: Parcel, id: String, name: CharSequence, importance: Int) : this() {
+    constructor(parcel: Parcel, id: String, name: CharSequence, importance: Int) : this {
         //
     }
 
-    private fun getBuilding(context: Context, channelId: String, chanName: CharSequence, importance: Int){
+    fun getBuilding(context: Context){
         var builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.notification_icon)
             .setContentTitle("Confer Notifies")
@@ -100,6 +105,8 @@ class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelabl
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(CHANNEL_ID, CHANNEL_NAME)
+
+        notificationManager.notify(, builder.build)
     }
 
     private fun NotificationManager.notificationMessages(channelId: String, chanName: CharSequence) {
@@ -125,7 +132,7 @@ class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelabl
         //
     }
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-
+        //
     }
     override fun describeContents(): Int {
         return 0
