@@ -1,8 +1,11 @@
 package com.example.messagesinkotlin.Notifications
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
@@ -13,103 +16,45 @@ import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.provider.Settings.Global.getString
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v4.app.NotificationCompat
+import com.example.messagesinkotlin.Messaging.LatestMessagesActivity
 import com.example.messagesinkotlin.R
 
-@SuppressLint("ParcelCreator")
-class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelable{
-    companion object CREATOR : Parcelable.Creator<NotifyMessage> {
-        override fun createFromParcel(parcel: Parcel): NotifyMessage {
-            return NotifyMessage(parcel)
-        }
-
-        private fun NotifyMessage(parcel: Parcel): NotifyMessage {
-            //
-        }
-
-        override fun newArray(size: Int): Array<NotifyMessage?> {
-            return arrayOfNulls(size)
-        }
+class NotifyMessage{
+    companion object{
         private const val CHANNEL_ID = "Message_Notification"
         private const val CHANNEL_NAME = "Confer"
-    }
 
-        //Notification Fanciness
-    /*fun alerts(){
-        //Bubbles
-        fun setAllowBubbles(allowBubbles: Boolean): Unit{
-            //
-        }
-        fun canBubble(): Boolean{
-            setAllowBubbles()
-        }
-        //Lights
-        fun enableLights(lights: Boolean): Unit{
-            //
-        }
-        fun shouldShowLights(): Boolean{
-            enableLights()
-            return enableLights("Green", )
-        }
-        fun getLightColor(): Int{
-            //
-        }
-        fun setLightColor(argb: Int): Unit{
-
-        }
-        //Vibrations
-        fun enableVibration(vibration: Boolean): Unit{
-            //
-        }
-        fun shouldVibrate(): Boolean{
-            enableVibration()
-        }
-        fun getVibrationPattern(): LongArray{
-            shouldVibrate()
-        }
-        //Other stuff
-        fun getName(): CharSequence{
-            getName()
-        }
-        fun getLockscreenVisibility(): Int{
-            getLockscreenVisibility()
-        }
-        fun getSound(): Uri {
-            //
-        }
-        fun getGroup(): String{
-            //
-        }
-        fun getDescription(): String{
-            //
-        }
-        fun getAudioAttributes(): AudioAttributes {
-            //
-        }
-        fun canShowBadge(): Boolean{
-            //
-        }
-    }*/
-
-    constructor(parcel: Parcel, id: String, name: CharSequence, importance: Int) : this {
-        //
-    }
-
-    fun getBuilding(context: Context){
-        var builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.notification_icon)
-            .setContentTitle("Confer Notifies")
-            .setContentText("Time to Confer!")
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun getBuilding(context: Context, channelId: String){
+            val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle("Confer Notifies")
+                .setContentText("Time to Confer!")
+                .setContentIntent(getPendingIntent(context, LatestMessagesActivity::class.java))
             //.setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(CHANNEL_ID, CHANNEL_NAME)
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(CHANNEL_ID)
 
-        notificationManager.notify(, builder.build)
+            notificationManager.notify(CHANNEL_NAME, builder.build())
+        }
+
+        private fun <T> getPendingIntent(context: Context, javaClass: Class<T>): PendingIntent{
+            val intent = Intent(context, javaClass)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+            val stackBuilder = TaskStackBuilder.create(context)
+            stackBuilder.addParentStack(javaClass)
+            stackBuilder.addNextIntent(intent)
+
+            return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
     }
 
-    private fun NotificationManager.notificationMessages(channelId: String, chanName: CharSequence) {
+    private fun NotificationManager.createNotificationChannel(channelId: String, chanName: CharSequence) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             /*val chanName = "Confer Notification"
             val descriptionText = "Notified User"*/
@@ -119,6 +64,10 @@ class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelabl
 
             mChannel.enableLights(true)
             mChannel.lightColor = Color.GREEN
+            mChannel.lockscreenVisibility
+            mChannel.enableVibration(true)
+            mChannel.audioAttributes
+            mChannel.canShowBadge()
             this.createNotificationChannel(mChannel)
             //mChannel.description = descriptionText
             // Register the channel with the system; you can't change the importance
@@ -126,15 +75,5 @@ class NotifyMessage(id: String, name: CharSequence, importance: Int) : Parcelabl
             /*val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)*/
         }
-    }
-
-    private fun getSystemService(notificatioN_SERVICE: String): Any {
-        //
-    }
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        //
-    }
-    override fun describeContents(): Int {
-        return 0
     }
 }

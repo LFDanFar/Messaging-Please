@@ -39,8 +39,7 @@ class ChatlogActivity : AppCompatActivity() {
 
         listenMessages()
 
-        sendMessageButton.setOnClickListener{
-            Log.d("Chatlog", "Send")
+        sendMessageButton.setOnClickListener{   //Sends messages
             actuallySendMessage()
         }
     }
@@ -54,7 +53,6 @@ class ChatlogActivity : AppCompatActivity() {
 
         if (fromId == null) return
 
-        //val reference = FirebaseDatabase.getInstance().getReference("/messages").push()         //Does general push
         val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()      //Messages stored with IDs so users can get their correct messages
         val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis()/1000)     //Remove these if I don't want to store specific information
 
@@ -62,15 +60,13 @@ class ChatlogActivity : AppCompatActivity() {
 
 
         reference.setValue(chatMessage)
-            .addOnSuccessListener {
-                Log.d("Chatlog", "Saved chat message: ${reference.key}")
+            .addOnSuccessListener { //Saves messages in chatlog
                 editTextChatlog.text.clear()    //Clears textbox for messages
                 recyclerviewChatlog.scrollToPosition(adapter.itemCount - 1)
             }
 
         toReference.setValue(chatMessage)
 
-        //Latest message stuff
         val latestMessageReference = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")      //Creates node that stores information for user sending
         latestMessageReference.setValue(chatMessage)
         val latestMessageToReference = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")    //Stores information for user receiving
@@ -86,9 +82,7 @@ class ChatlogActivity : AppCompatActivity() {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val chatMessage = p0.getValue(ChatMessage::class.java)
 
-                if (chatMessage != null){
-                    Log.d("Chatlog", chatMessage.text)
-
+                if (chatMessage != null){   //Updates messages
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid){
                         val currentUser = LatestMessagesActivity.currentUser ?: return
                         adapter.add(ChatFromItem(chatMessage.text, currentUser))

@@ -5,23 +5,18 @@ import com.google.firebase.auth.FirebaseAuth
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.example.messagesinkotlin.Messaging.NewMessageActivity.Companion.USER_KEY
 import com.example.messagesinkotlin.Models.ChatMessage
 import com.example.messagesinkotlin.Models.User
 import com.example.messagesinkotlin.R
 import com.example.messagesinkotlin.RegisterandLogin.RegisterActivity
 import com.example.messagesinkotlin.Views.LatestMessageRow
 import com.google.firebase.database.*
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_latest_messages.*
-import kotlinx.android.synthetic.main.latest_message_row.view.*
-import kotlinx.android.synthetic.main.user_row_new_message.view.*
+
 
 class LatestMessagesActivity : AppCompatActivity() {
 
@@ -94,9 +89,8 @@ class LatestMessagesActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
         ref.addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onDataChange(p0: DataSnapshot) {
+            override fun onDataChange(p0: DataSnapshot) {       //Shows username for recent messages
                 currentUser = p0.getValue(User::class.java)
-                Log.d("LatestMessages", "Current user: ${currentUser?.username}")
             }
             override fun onCancelled(p0: DatabaseError) {
                 //

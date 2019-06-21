@@ -27,16 +27,12 @@ class RegisterActivity : AppCompatActivity() {
             registerUser()  //Reformatted my code
         }
         existingAccountTextView.setOnClickListener{     //User has account
-            Log.d("RegisterActivity", "Try to show login activity")
-
             //Launch LoginActivity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
         selectPhotoButton.setOnClickListener{           //Make the round button choose a picture
-            Log.d("RegisterActivity", "Try to show photo selector")
-
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 0)
@@ -48,18 +44,13 @@ class RegisterActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {   //Make it so photo may be chosen
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
-            Log.d("RegisterActivity", "Photo was selected")
-
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){      //Photo selection
             selectedPhotoUri = data.data
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
 
             selectPhotoImageView.setImageBitmap(bitmap)     //Allows for image to be chosen
             selectPhotoButton.alpha = 0f                    //Changes photo button so round picture may be viewed
-
-            /*val bitmapDrawable = BitmapDrawable(bitmap)
-            selectPhotoButton.setBackgroundDrawable(bitmapDrawable)*/   //Redundant due to val bitmap -> selectPhotoButton
         }
     }
 
@@ -77,6 +68,7 @@ class RegisterActivity : AppCompatActivity() {
             return
         }
 
+            //I'll leave this in
         Log.d("RegisterActivity", "Email is: " + email)
         Log.d("RegisterActivity", "Password: $password")   //$ does string format
 
@@ -86,7 +78,7 @@ class RegisterActivity : AppCompatActivity() {
                 if(!it.isSuccessful)    //Unsuccessful
                     return@addOnCompleteListener
 
-                //Successful
+                //Successfully made user
                 Log.d("RegisterActivity", "Successfully created user with uid: ${it.result?.user?.uid}")
                 Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show() //Account created
 
@@ -105,11 +97,9 @@ class RegisterActivity : AppCompatActivity() {
         val ref = FirebaseStorage.getInstance().getReference("/images/$filename")   //Tracks storage of image
 
         ref.putFile(selectedPhotoUri!!)
-            .addOnSuccessListener {
-                Log.d("RegisterActivity", "Successfully uploaded image: ${it.metadata?.path}")
-
+            .addOnSuccessListener {     //Photo successfully implemented
                 ref.downloadUrl.addOnSuccessListener {
-                    Log.d("RegisterActivity", "File Location: $it")
+                    Log.d("RegisterActivity", "File Location: $it") //Shows location of image
 
                     saveUserToFirebaseDatabase(it.toString())
                 }
@@ -126,18 +116,14 @@ class RegisterActivity : AppCompatActivity() {
 
         ref.setValue(user)
             .addOnSuccessListener {
-                Log.d("RegisterActivity", "Saved user to Firebase Database")
+                Log.d("RegisterActivity", "Saved user to Firebase Database")    //User saved to database
 
                 val intent = Intent(this, LatestMessagesActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)    //This clears all previous activity and makes it so clicking back closes the app.  Clear previous data
                 startActivity(intent)
             }
             .addOnFailureListener{
-                Log.d("RegisterActivity", "Failed to set value to database: ${it.message}")
+                Log.d("RegisterActivity", "Failed to set value to database: ${it.message}") //User not created
             }
     }
 }
-/*
-class User(val uid: String, val username: String, val profileImageUrl: String){
-    constructor() : this("", "", "")
-}*/
