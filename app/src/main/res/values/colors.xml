@@ -3,4 +3,5 @@
     <color name="colorPrimary">#43A047</color>
     <color name="colorPrimaryDark">#28292A</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimaryAppView">#43A047</color>
 </resources>

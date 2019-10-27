@@ -6,7 +6,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".Messaging.LatestMessagesActivity"
-        android:background="#3F51B5">
+        android:background="@color/colorPrimaryAppView"
+        >
     <android.support.v7.widget.RecyclerView
             android:layout_width="0dp"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"

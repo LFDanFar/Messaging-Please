@@ -21,7 +21,7 @@ import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v4.app.NotificationCompat
 import com.example.messagesinkotlin.Messaging.LatestMessagesActivity
 import com.example.messagesinkotlin.R
-
+/*
 class NotifyMessage{
     companion object{
         private const val CHANNEL_ID = "Message_Notification"
@@ -76,4 +76,4 @@ class NotifyMessage{
             notificationManager.createNotificationChannel(mChannel)*/
         }
     }
-}
+}*/
